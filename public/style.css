@@ -1,0 +1,292 @@
+:root {
+    --primary: #ff6b81;
+    --secondary: #ff4757;
+    --bg-color: #ffdce0;
+    --text-dark: #2f3542;
+    --card-bg: rgba(255, 255, 255, 0.9);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #ffe0e6;
+    background-image: radial-gradient(#ffb8b8 4px, transparent 4px), radial-gradient(#ffb8b8 4px, transparent 4px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    font-family: 'Mali', cursive, sans-serif;
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+#app {
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    position: relative;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    text-align: center;
+    color: var(--primary);
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px white;
+}
+
+.warp-text {
+    animation: warp 2s infinite ease-in-out alternate;
+}
+
+@keyframes warp {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+#loading-screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 224, 230, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#loading-message {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    margin-top: 15px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#game-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.question-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(255, 107, 129, 0.2);
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.hearts-section {
+    width: 100%;
+    background: rgba(255,255,255,0.7);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.heart-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.heart-row .label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.end-card {
+    position: absolute;
+    z-index: 200;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+#spin-btn {
+    background: linear-gradient(135deg, #fbc531, #e1b12c) !important;
+    font-size: 1.5rem;
+    padding: 12px 30px;
+    box-shadow: 0 5px 15px rgba(225, 177, 44, 0.4) !important;
+}
+
+.question-card p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #747d8c;
+}
+
+#prefix-display {
+    font-size: 3.5rem;
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+.timer {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #ff4757;
+    font-weight: 600;
+    background: #ffeaa7;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+#input-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.4rem;
+    font-family: inherit;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    outline: none;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 5px 20px rgba(255, 107, 129, 0.3);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.4rem;
+    font-family: inherit;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(255, 71, 87, 0.4);
+}
+
+.status {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(47, 53, 66, 0.8);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    z-index: 50;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 107, 129, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#waiting-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.result-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    text-align: center;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#result-title {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.result-box {
+    text-align: left;
+    background: #f1f2f6;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.result-box p {
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.result-box span {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.success-bg {
+    background: linear-gradient(135deg, #7bed9f 0%, #2ed573 100%) !important;
+}
+
+.fail-bg {
+    background: linear-gradient(135deg, #fbc531 0%, #e1b12c 100%) !important;
+}

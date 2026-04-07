@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>วอมและปลายอ้วนจะใจตรงกันไหม 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div id="status-bar" class="status hidden">Connecting...</div>
+
+        <div id="game-container" class="hidden">
+            <h1 class="title">วอมและปลายอ้วนจะใจตรงกันไหม 💖</h1>
+
+            <div id="hearts-section" class="hearts-section">
+                <div class="heart-row"><span class="label">คุณ:</span> <span id="my-hearts">❤️❤️❤️❤️❤️</span></div>
+                <div class="heart-row"><span class="label">แฟน:</span> <span id="partner-hearts">❤️❤️❤️❤️❤️</span></div>
+            </div>
+
+            <div class="question-card">
+                <p>โจทย์คือคำว่า...</p>
+                <h2 id="prefix-display">???</h2>
+                <div id="timer-display" class="timer hidden">เหลือเวลา 3 วิ!</div>
+            </div>
+
+            <div id="input-section">
+                <input type="text" id="answer-input" placeholder="พิมพ์คำตอบที่คิดตรงกัน" autocomplete="off">
+                <button id="submit-btn" onclick="submitAnswer()">ส่งคำตอบเลย!</button>
+            </div>
+
+            <div id="waiting-section" class="hidden">
+                <div class="spinner"></div>
+                <p id="waiting-text">รอแฟนตอบรึเปล่า...</p>
+            </div>
+
+            <div id="result-section" class="hidden result-card">
+                <h3 id="result-title"></h3>
+                <div class="result-box">
+                    <p>คุณตอบ: <span id="my-answer"></span></p>
+                    <p>แฟนตอบ: <span id="partner-answer"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading-screen">
+            <h1 class="title warp-text">วอมและปลายอ้วนจะใจตรงกันไหม 💖</h1>
+            <p id="loading-message">กำลังเชื่อมต่อหัวใจ...</p>
+        </div>
+
+        <div id="game-over-screen" class="hidden end-card">
+            <h1 style="color: #ff4757; margin-bottom: 10px; font-size: 2.5rem;">จบเกม! 💥</h1>
+            <h2 id="loser-text" style="margin-bottom: 20px; color: #2f3542;">...</h2>
+
+            <div id="wheel-section" style="position: relative; margin: 20px auto; width: 310px; height: 310px;">
+                <canvas id="wheel-canvas" width="310" height="310"
+                    style="border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.2);"></canvas>
+                <!-- Pointer -->
+                <div
+                    style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid #ff4757; z-index: 10; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));">
+                </div>
+            </div>
+
+            <button id="spin-btn" class="hidden"
+                style="margin-bottom: 20px; background: linear-gradient(135deg, #fbc531, #e1b12c);"
+                onclick="spinWheel()" ontouchstart="spinWheel()">หมุนวงล้อ!</button>
+
+            <div id="punishment-section" class="hidden"
+                style="background: #f1f2f6; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <h3 style="color: #747d8c; margin-bottom: 15px; font-size: 1.1rem;">โดนลงโทษซะดีๆ...</h3>
+                <p id="punishment-text" style="font-size: 1.4rem; color: #ff4757; font-weight: 600;"></p>
+            </div>
+
+            <button id="restart-btn" class="hidden" onclick="socket.emit('restart_game')">เล่นใหม่อีกรอบ!</button>
+        </div>
+    </div>
+
+    <!-- Include socket.io client script -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

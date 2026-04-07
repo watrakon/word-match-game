@@ -103,6 +103,13 @@ const spinBtn = document.getElementById('spin-btn');
 const punishmentSection = document.getElementById('punishment-section');
 const restartBtn = document.getElementById('restart-btn');
 
+// Lobby Elements
+const lobbyScreen = document.getElementById('lobby-screen');
+const punishmentListEl = document.getElementById('punishment-list');
+const newPunishmentInput = document.getElementById('new-punishment');
+const readyBtn = document.getElementById('ready-btn');
+const lobbyStatus = document.getElementById('lobby-status');
+
 let currentRotation = 0;
 let wheelPunishments = [];
 let isSpinning = false;
@@ -163,6 +170,8 @@ function drawWheel(rotation = 0) {
     }
 }
 
+
+
 // Ensure the function is in the global scope for the HTML onclick handler
 window.spinWheel = function() {
     if (isSpinning) return;
@@ -170,6 +179,36 @@ window.spinWheel = function() {
     socket.emit('spin_wheel');
     spinBtn.disabled = true;
 };
+
+window.addPunishment = function() {
+    const text = newPunishmentInput.value.trim();
+    if (text) {
+        socket.emit('add_punishment', text);
+        newPunishmentInput.value = '';
+    }
+};
+
+window.deletePunishment = function(index) {
+    socket.emit('delete_punishment', index);
+};
+
+window.toggleReady = function() {
+    socket.emit('toggle_ready');
+};
+
+function renderPunishments(list) {
+    punishmentListEl.innerHTML = '';
+    list.forEach((p, index) => {
+        const li = document.createElement('li');
+        li.textContent = p;
+        const btn = document.createElement('button');
+        btn.textContent = '❌';
+        btn.className = 'delete-btn';
+        btn.onclick = () => deletePunishment(index);
+        li.appendChild(btn);
+        punishmentListEl.appendChild(li);
+    });
+}
 
 function renderHearts(count) {
     return '❤️'.repeat(Math.max(0, count)) + '🖤'.repeat(Math.max(0, 5 - count));
@@ -207,7 +246,55 @@ socket.on('error_full', (msg) => {
     showLoading(msg);
 });
 
+socket.on('go_to_lobby', (punishmentsList) => {
+    loadingScreen.classList.add('hidden');
+    gameContainer.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    lobbyScreen.classList.remove('hidden');
+    renderPunishments(punishmentsList);
+});
+
+socket.on('update_lobby', (punishmentsList) => {
+    renderPunishments(punishmentsList);
+});
+
+socket.on('ready_status', (readyPlayers) => {
+    const isMeReady = readyPlayers[socket.id];
+    
+    let isPartnerReady = false;
+    let partnerExists = false;
+    for (let id in readyPlayers) {
+        if (id !== socket.id) {
+            partnerExists = true;
+            isPartnerReady = readyPlayers[id];
+        }
+    }
+
+    if (isMeReady) {
+        readyBtn.classList.add('ready-active');
+        readyBtn.textContent = "รอยืนยัน... ✔️";
+    } else {
+        readyBtn.classList.remove('ready-active');
+        readyBtn.textContent = "พร้อมลุย! (Ready)";
+    }
+
+    if (partnerExists) {
+        if (isPartnerReady) {
+            lobbyStatus.textContent = "แฟนกดพร้อมแล้ว! รอคุณอยู่นะ";
+            lobbyStatus.style.color = "#2ed573";
+        } else {
+            lobbyStatus.textContent = "แฟนกำลังแต่งบทลงโทษอยู่...";
+            lobbyStatus.style.color = "#ff4757";
+        }
+    } else {
+        lobbyStatus.textContent = "รอแฟนเชื่อมต่อเข้าห้อง...";
+        lobbyStatus.style.color = "#747d8c";
+    }
+});
+
 socket.on('init_hearts', (heartsObj) => {
+    lobbyScreen.classList.add('hidden');
+    gameContainer.classList.remove('hidden');
     gameOverScreen.classList.add('hidden');
     punishmentSection.classList.add('hidden');
     restartBtn.classList.add('hidden');

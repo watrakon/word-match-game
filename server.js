@@ -19,7 +19,7 @@ let roundData = {
     answers: {}
 };
 
-const punishments = [
+const defaultPunishments = [
     "ทำท่าทางตามอีโมจิที่แฟนส่งมาให้ 🤪",
     "ดูหนังด้วยกัน1เรื่อง 🍣",
     "ตามใจ1วัน 🧽",
@@ -31,6 +31,10 @@ const punishments = [
     "พรุ่งนี้ต้องตื่นมาปลุกตอนเช้า ☀️",
     "ทำเสียงร้องสัตว์ 3 ชนิดให้ตลกที่สุด 🐶"
 ];
+
+let customPunishments = [...defaultPunishments];
+let readyPlayers = {};
+let isGameRunning = false;
 
 const words = [
     "มะ", "น้ำ", "รถ", "ไฟ", "หมู", "ปลา", "ความ", "การ", "ที่", "ทาง", "คน", "ชาว", "ผู้", "นัก", "ช่าง",
@@ -79,12 +83,14 @@ io.on('connection', (socket) => {
 
     if (players.length < 2) {
         players.push(socket.id);
+        readyPlayers[socket.id] = false;
 
-        if (players.length === 2) {
-            // Both players joined, start game
-            startGame();
-        } else {
-            socket.emit('waiting', 'รอแฟนเข้ามา...');
+        // Send initial lobby data
+        socket.emit('go_to_lobby', customPunishments);
+        io.emit('ready_status', readyPlayers);
+
+        if (players.length === 2 && isGameRunning) {
+            // Reconnect logic? Simplify: do nothing.
         }
     } else {
         socket.emit('error_full', 'ห้องเต็มแล้ว เล่นได้แค่ 2 คนครับ');
@@ -94,9 +100,38 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Player disconnected:', socket.id);
         players = players.filter(id => id !== socket.id);
+        delete readyPlayers[socket.id];
+        
         roundData.answers = {};
-        if (players.length > 0) {
+        
+        io.emit('ready_status', readyPlayers);
+
+        if (players.length > 0 && isGameRunning) {
             io.to(players[0]).emit('waiting', 'แฟนหลุดออกไป รอแฟนเข้าใหม่...');
+        }
+    });
+
+    socket.on('add_punishment', (text) => {
+        if (!text || text.length > 30) return;
+        customPunishments.push(text);
+        io.emit('update_lobby', customPunishments);
+    });
+
+    socket.on('delete_punishment', (index) => {
+        if (index >= 0 && index < customPunishments.length) {
+            customPunishments.splice(index, 1);
+            io.emit('update_lobby', customPunishments);
+        }
+    });
+
+    socket.on('toggle_ready', () => {
+        readyPlayers[socket.id] = !readyPlayers[socket.id];
+        io.emit('ready_status', readyPlayers);
+
+        // Check if both ready
+        if (players.length === 2 && readyPlayers[players[0]] && readyPlayers[players[1]]) {
+            isGameRunning = true;
+            startGame();
         }
     });
 
@@ -119,15 +154,18 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('restart_game', () => {
-        if (players.length === 2) {
-            startGame();
-        }
+    socket.on('return_to_lobby', () => {
+        isGameRunning = false;
+        readyPlayers = {};
+        players.forEach(p => readyPlayers[p] = false);
+        io.emit('go_to_lobby', customPunishments);
+        io.emit('ready_status', readyPlayers);
     });
 
     socket.on('spin_wheel', () => {
-        const randomIndex = Math.floor(Math.random() * punishments.length);
-        io.emit('spin_result', { index: randomIndex, punishment: punishments[randomIndex] });
+        if (customPunishments.length === 0) customPunishments = ["ไม่มีบทลงโทษ 😅"];
+        const randomIndex = Math.floor(Math.random() * customPunishments.length);
+        io.emit('spin_result', { index: randomIndex, punishment: customPunishments[randomIndex] });
     });
 });
 
@@ -173,7 +211,8 @@ function checkAndEmitResult() {
 
     if (losers.length > 0) {
         setTimeout(() => {
-            io.emit('game_over', { losers, punishments });
+            if (customPunishments.length === 0) customPunishments = ["ไม่มีบทลงโทษ 😅"];
+            io.emit('game_over', { losers, punishments: customPunishments });
         }, 3000);
         return; // stop loop
     }
@@ -196,9 +235,9 @@ function startNewRound(prefix) {
     roundData.answers = {};
     io.emit('new_round', roundData.prefix);
 
-    // Start 3 second timer
+    // Start 5 second timer
     clearInterval(roundTimerInterval);
-    roundTimeLeft = 4; // Display will start at 3
+    roundTimeLeft = 6; // Display will start at 5
 
     roundTimerInterval = setInterval(() => {
         roundTimeLeft--;

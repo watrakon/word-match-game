@@ -24,7 +24,7 @@
             <div class="question-card">
                 <p>โจทย์คือคำว่า...</p>
                 <h2 id="prefix-display">???</h2>
-                <div id="timer-display" class="timer hidden">เหลือเวลา 3 วิ!</div>
+                <div id="timer-display" class="timer hidden">เหลือเวลา 5 วิ!</div>
             </div>
 
             <div id="input-section">
@@ -47,8 +47,25 @@
         </div>
 
         <div id="loading-screen">
+            <h1 class="bounce">Telepathy<br>Word Match</h1>
+            <p id="loading-message">รอเชื่อมต่อ...</p>
+            <div class="loader"></div>
+        </div>
+
+        <div id="lobby-screen" class="hidden">
             <h1 class="title warp-text">วอมและปลายอ้วนจะใจตรงกันไหม 💖</h1>
-            <p id="loading-message">กำลังเชื่อมต่อหัวใจ...</p>
+            <div class="lobby-card">
+                <h2>ตั้งค่าบทลงโทษ 🎡</h2>
+                <div class="punishment-list-container">
+                    <ul id="punishment-list"></ul>
+                </div>
+                <div class="add-punishment-box">
+                    <input type="text" id="new-punishment" placeholder="พิมพ์บทลงโทษใหม่..." maxlength="20">
+                    <button id="add-punishment-btn" onclick="addPunishment()">+ เพิ่ม</button>
+                </div>
+                <button id="ready-btn" onclick="toggleReady()">พร้อมลุย! (Ready)</button>
+                <p id="lobby-status">รอแฟนเชื่อมต่อ...</p>
+            </div>
         </div>
 
         <div id="game-over-screen" class="hidden end-card">
@@ -74,7 +91,7 @@
                 <p id="punishment-text" style="font-size: 1.4rem; color: #ff4757; font-weight: 600;"></p>
             </div>
 
-            <button id="restart-btn" class="hidden" onclick="socket.emit('restart_game')">เล่นใหม่อีกรอบ!</button>
+            <button id="restart-btn" class="hidden" onclick="socket.emit('return_to_lobby')">เล่นใหม่อีกรอบ!</button>
         </div>
     </div>
 

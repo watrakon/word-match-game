@@ -290,3 +290,106 @@ button:active {
 .fail-bg {
     background: linear-gradient(135deg, #fbc531 0%, #e1b12c 100%) !important;
 }
+
+/* LOBBY STYLES */
+#lobby-screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(#ffb8b8 4px, transparent 4px);
+    background-size: 50px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 95;
+    padding: 20px;
+}
+
+.lobby-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.lobby-card h2 {
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.punishment-list-container {
+    background: #f1f2f6;
+    border-radius: 12px;
+    padding: 10px;
+    height: 180px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+#punishment-list {
+    list-style: none;
+    text-align: left;
+}
+
+#punishment-list li {
+    background: white;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size: 1.1rem;
+}
+
+.delete-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    width: auto;
+    box-shadow: none;
+    font-size: 0.9rem;
+}
+
+.add-punishment-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-punishment-box input {
+    flex: 1;
+    font-size: 1rem;
+    padding: 10px;
+}
+
+.add-punishment-box button {
+    width: auto;
+    font-size: 1rem;
+    padding: 0 15px;
+}
+
+#ready-btn {
+    background: linear-gradient(135deg, #2ed573 0%, #7bed9f 100%);
+    box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+    margin-bottom: 10px;
+}
+#ready-btn.ready-active {
+    background: linear-gradient(135deg, #1e90ff 0%, #70a1ff 100%);
+    box-shadow: 0 5px 15px rgba(30, 144, 255, 0.4);
+}
+
+#lobby-status {
+    color: #747d8c;
+    font-size: 1rem;
+}
